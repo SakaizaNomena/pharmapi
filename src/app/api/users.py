@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 
 from src.app.core.database import get_db
 from src.app.core.security import get_current_user
+from src.app.schemas.common_schema import MessageResponse
 from src.app.schemas.pharmacy_schema import PharmacyItem
 from src.app.schemas.user_schema import (
     UserCreate,
@@ -49,7 +50,7 @@ def update_user(user_id: int, user: UserUpdate, db: Session = Depends(get_db)):
 
 
 # DELETE /users/{user_id} : supprimer un utilisateur.
-@router.delete("/{user_id}")
+@router.delete("/{user_id}", response_model=MessageResponse)
 def delete_user(user_id: int, db: Session = Depends(get_db)):
     return user_services.delete_user(db, user_id)
 

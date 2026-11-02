@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 
 from src.app.core.database import get_db
 from src.app.core.security import get_current_user
+from src.app.schemas.common_schema import MessageResponse
 from src.app.schemas.medicament_schema import MedicamentItem
 from src.app.schemas.pharmacy_schema import (
     PharmacyCreate,
@@ -53,7 +54,7 @@ def update_pharmacy(
 
 
 # DELETE /pharmacies/{pharmacy_id} : supprimer une pharmacie.
-@router.delete("/{pharmacy_id}")
+@router.delete("/{pharmacy_id}", response_model=MessageResponse)
 def delete_pharmacy(pharmacy_id: int, db: Session = Depends(get_db)):
     return pharmacy_services.delete_pharmacy(db, pharmacy_id)
 

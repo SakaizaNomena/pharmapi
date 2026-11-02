@@ -10,6 +10,7 @@ from src.app.schemas.auth_schema import (
     RegisterRequest,
     TokenResponse,
 )
+from src.app.schemas.common_schema import MessageResponse
 from src.app.schemas.user_schema import UserItem
 from src.app.services import auth_services
 
@@ -50,7 +51,7 @@ def me(current_user: User = Depends(get_current_user)):
 
 
 # POST /auth/logout : supprime le token utilisé (déconnexion).
-@router.post("/logout")
+@router.post("/logout", response_model=MessageResponse)
 def logout(
     auth_token: AuthToken = Depends(get_current_token),
     db: Session = Depends(get_db),
