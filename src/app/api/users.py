@@ -4,6 +4,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 from src.app.core.database import get_db
+from src.app.core.security import get_current_user
 from src.app.schemas.pharmacy_schema import PharmacyItem
 from src.app.schemas.user_schema import (
     UserCreate,
@@ -14,9 +15,12 @@ from src.app.schemas.user_schema import (
 from src.app.services import user_services
 
 # Tag "users" : regroupe toutes les routes utilisateurs dans /docs.
+# dependencies=[Depends(get_current_user)] protège TOUTES les routes :
+# sans token valide, l'API renvoie 401 Unauthorized.
 router = APIRouter(
     prefix="/users",
     tags=["users"],
+    dependencies=[Depends(get_current_user)],
 )
 
 

@@ -3,6 +3,7 @@ from typing import List
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 
+from src.app.models.medicament_model import Medicament
 from src.app.models.pharmacy_model import Pharmacy
 from src.app.models.user_model import User
 from src.app.schemas.pharmacy_schema import PharmacyCreate, PharmacyUpdate
@@ -63,6 +64,12 @@ def delete_pharmacy(db: Session, pharmacy_id: int) -> dict:
 def get_pharmacy_users(db: Session, pharmacy_id: int) -> List[User]:
     pharmacy = get_pharmacy(db, pharmacy_id)
     return pharmacy.users
+
+
+# READ : lister les médicaments d'une pharmacie.
+def get_pharmacy_medicaments(db: Session, pharmacy_id: int) -> List[Medicament]:
+    pharmacy = get_pharmacy(db, pharmacy_id)
+    return pharmacy.medicaments
 
 
 # CREATE (relation) : ajouter un utilisateur à une pharmacie.

@@ -7,6 +7,7 @@ from src.app.core.database import Base
 from src.app.models.association import user_pharmacy
 
 if TYPE_CHECKING:
+    from src.app.models.medicament_model import Medicament
     from src.app.models.user_model import User
 
 
@@ -34,4 +35,11 @@ class Pharmacy(Base):
     users: Mapped[list["User"]] = relationship(
         secondary=user_pharmacy,
         back_populates="pharmacies",
+    )
+
+    # Relation ONE-TO-MANY : une pharmacie possède plusieurs médicaments.
+    # Si la pharmacie est supprimée, ses médicaments sont supprimés aussi.
+    medicaments: Mapped[list["Medicament"]] = relationship(
+        back_populates="pharmacy",
+        cascade="all, delete-orphan",
     )

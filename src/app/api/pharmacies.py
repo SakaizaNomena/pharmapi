@@ -4,6 +4,8 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 from src.app.core.database import get_db
+from src.app.core.security import get_current_user
+from src.app.schemas.medicament_schema import MedicamentItem
 from src.app.schemas.pharmacy_schema import (
     PharmacyCreate,
     PharmacyItem,
@@ -13,9 +15,12 @@ from src.app.schemas.user_schema import UserItem
 from src.app.services import pharmacy_services
 
 # Tag "pharmacies" : regroupe toutes les routes pharmacies dans /docs.
+# dependencies=[Depends(get_current_user)] protège TOUTES les routes :
+# sans token valide, l'API renvoie 401 Unauthorized.
 router = APIRouter(
     prefix="/pharmacies",
     tags=["pharmacies"],
+    dependencies=[Depends(get_current_user)],
 )
 
 
@@ -69,3 +74,12 @@ def attach_user(pharmacy_id: int, user_id: int, db: Session = Depends(get_db)):
 @router.delete("/{pharmacy_id}/users/{user_id}", response_model=PharmacyItem)
 def detach_user(pharmacy_id: int, user_id: int, db: Session = Depends(get_db)):
     return pharmacy_services.detach_user(db, pharmacy_id, user_id)
+
+
+# GET /pharmacies/{pharmacy_id}/medicaments : médicaments d'une pharmacie.
+@router.get("/{pharmacy_id}/medicaments", response_model=List[MedicamentItem])
+def get_pharmacy_medicaments(
+    pharmacy_id: int,
+    db: Session = Depends(get_db),
+):
+    return pharmacy_services.get_pharmacy_medicaments(db, pharmacy_id)

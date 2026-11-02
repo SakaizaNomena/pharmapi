@@ -7,6 +7,7 @@ from src.app.core.database import Base
 from src.app.models.association import user_pharmacy
 
 if TYPE_CHECKING:
+    from src.app.models.auth_token_model import AuthToken
     from src.app.models.pharmacy_model import Pharmacy
 
 
@@ -35,4 +36,11 @@ class User(Base):
     pharmacies: Mapped[list["Pharmacy"]] = relationship(
         secondary=user_pharmacy,
         back_populates="users",
+    )
+
+    # Tokens de connexion liés à cet utilisateur.
+    # Si l'utilisateur est supprimé, ses tokens sont supprimés aussi.
+    tokens: Mapped[list["AuthToken"]] = relationship(
+        back_populates="user",
+        cascade="all, delete-orphan",
     )
